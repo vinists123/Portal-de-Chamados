@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Análises · Dados & Insights - Facilities</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main class="an">
+  <section class="an-hero">
+    <h1>Painel de <b>Produtividade</b></h1>
+    <p>Como os times de Dados e Facilities estão recebendo, tratando e entregando as demandas</p>
+    <div class="an-ctrl">
+      <div class="seg" id="segPeriodo">
+        <button data-p="7">7 dias</button><button data-p="30" class="ativo">30 dias</button><button data-p="90">90 dias</button>
+        <button data-p="365">12 meses</button><button data-p="tudo">Tudo</button>
+      </div>
+      <select id="fDestAn"></select>
+      <select id="fOperAn"></select>
+      <select id="fResp"></select>
+    </div>
+    <div class="an-insight" id="insights"></div>
+  </section>
+  <div id="vazio" class="hidden" style="margin-top:16px;text-align:right">
+    <button class="btn sec" onclick="gerarExemplo()">✨ Gerar dados de exemplo</button>
+  </div>
+  <div id="btnRemoverEx" class="hidden" style="margin-top:16px;text-align:right">
+    <button class="btn sec" onclick="removerExemplo()">🧹 Remover dados de exemplo</button>
+  </div>
+  <div class="an-kpis" id="kpisAn"></div>
+  <div class="an-grid" id="painel"></div>
+</main>
+<script src="assets/dados.js"></script>
+<script src="assets/analises.js"></script>
+</body>
+</html>

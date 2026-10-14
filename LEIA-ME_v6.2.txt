@@ -1,0 +1,14 @@
+PORTAL v6.2 - AVISOS/FAQ + QUADRO EM TEMPO REAL  (arquivos prontos)
+===================================================================
+1) Feche a janela preta do servidor.
+2) Copie TUDO deste zip para a pasta do portal, SUBSTITUINDO:
+     formulario.html  quadro.html  minhas.html
+     servidor_portal.py  config_portal.json
+     assets\avisos.js  assets\tempo_real.js   (novos)
+   NÃO apague: index.html, analises.html, config_email.json, assets\dados.js,
+   assets\quadro.js, assets\analises.js, assets\style.css e a pasta "dados".
+3) Dois cliques em iniciar_portal.bat -> deve mostrar "v6.2" e
+     Avisos/FAQ : editáveis por vi37114368, ro37110232
+4) No navegador: Ctrl+F5 (uma vez).
+   - Nova solicitação: painel "Avisos e dúvidas frequentes" abaixo do formulário
+   - Quadro do time / Minhas demandas: selo "Ao vivo" ao lado do título

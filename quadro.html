@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ordens de Serviço MIS &amp; Facilities · Dados & Insights - Facilities</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main class="planner">
+  <div class="planner-cab">
+    <div class="planner-titulo"><span class="ico-plano">M</span><span>Ordens de Serviço MIS &amp; Facilities</span></div>
+    <div class="planner-filtros">
+      <input id="fBusca" placeholder="🔎 Filtrar por palavra-chave">
+      <select id="fDest"></select><select id="fOper"></select><select id="fTipo"></select><select id="fResp"></select>
+    </div>
+  </div>
+  <div class="planner-filtros" id="exportBtns" style="margin-bottom:14px">
+    <a class="pl-btn" href="#" onclick="exportarBase('demandas');return false">⬇ Base demandas</a>
+    <a class="pl-btn" href="#" onclick="exportarBase('historico');return false">⬇ Histórico</a>
+    <a class="pl-btn" href="#" onclick="exportarBase('comentarios');return false">⬇ Comentários</a>
+    <a class="pl-btn" href="#" id="btnTesteEmail" onclick="testarEmail();return false">✉ Testar e-mail</a>
+    <a class="pl-btn" href="#" onclick="limparBaseLocal();return false">🗑 Limpar testes</a>
+  </div>
+  <div class="kpis" id="kpis"></div>
+  <div class="board" id="board"></div>
+</main>
+<script>const MODO = "todas";</script>
+<script src="assets/dados.js"></script>
+<script src="assets/quadro.js"></script>
+<!-- Atualização automática do quadro (sem F5) -->
+<script src="assets/tempo_real.js"></script>
+<script>if (!USER || USER.nivel !== 3) { const b = document.getElementById("btnTesteEmail"); if (b) b.remove(); }</script>
+</body>
+</html>

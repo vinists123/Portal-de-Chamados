@@ -1,0 +1,22 @@
+ATUALIZAÇÃO v6.0 - LOGIN COM SENHA DE REDE + SAÍDA AUTOMÁTICA EM 2 HORAS
+=======================================================================
+1) Feche a janela preta do servidor.
+2) Copie para a pasta do portal, substituindo:
+     servidor_portal.py · index.html · assets\dados.js · config_portal.json (novo)
+   (config_email.json, os demais .html/.js e a pasta "dados" continuam iguais)
+3) Dois cliques em iniciar_portal.bat -> a tela deve mostrar "v6.0" e
+     LOGIN : senha de rede · domínio XXXXX · sessão de 2 h
+
+config_portal.json
+  "autenticacao": "rede"   -> só entra com a senha de rede (Windows/AD)
+                  "teste"  -> qualquer senha (NÃO usar em produção)
+  "dominio": ""            -> vazio = mesmo domínio do seu computador. Se der
+                              "usuário ou senha incorretos" com a senha certa,
+                              coloque o domínio (rode "echo %USERDOMAIN%" no cmd).
+  "sessao_horas": 2        -> tempo máximo logado
+  "tentativas_bloqueio": 5 / "bloqueio_minutos": 10
+                           -> após 5 senhas erradas o PORTAL bloqueia aquele login
+                              por 10 min (protege a conta de rede de ser bloqueada no AD)
+
+Registros: dados\acessos_log.csv (quem entrou, de qual IP, negados e saídas)
+Reiniciar o servidor desloga todo mundo (precisam entrar de novo).

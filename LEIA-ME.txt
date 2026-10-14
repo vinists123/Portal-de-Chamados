@@ -1,0 +1,33 @@
+PORTAL DE DEMANDAS - Dados & Insights - Facilities  ·  VERSÃO EM REDE (PRONTA)
+=============================================================================
+LINK PARA O TIME:   http://10.11.4.40:8080
+
+INSTALAÇÃO (uma vez só)
+1. Extraia o zip em C:\Portal  (fica C:\Portal\index.html, C:\Portal\assets\...)
+2. Botão direito em  liberar_firewall_ADMIN.bat  > Executar como administrador
+   (se não tiver permissão de admin, envie este arquivo ao TI para executar)
+3. Dois cliques em  iniciar_com_windows.bat   (liga sozinho ao entrar no Windows)
+4. Dois cliques em  iniciar_portal.bat   -> deixe a janela preta aberta (pode minimizar)
+5. Abra http://localhost:8080 para conferir e peça a um colega abrir http://10.11.4.40:8080
+
+TESTE DE UM COLEGA (PowerShell):  Test-NetConnection 10.11.4.40 -Port 8080
+  TcpTestSucceeded : True  -> ok   |   False -> firewall/rede bloqueando (acionar TI)
+
+NÍVEIS DE ACESSO (assets\dados.js)
+- Nível 3 (tudo): vi37114368, ro37110232 (admin para teste)
+- Nível 2 Facilities: ga37097221, maiza.santos, gcnascimento
+- Nível 2 Dados & Insights: lu37107265, felipe.couto, ma37112881, jo37097320, ca37097345, ro37124183
+  Nível 2 vê o Quadro só do seu time e, nas Análises, só o que está atribuído a ele.
+- Nível 1 (demais): Nova solicitação + Minhas demandas.
+- 1º acesso: cada pessoa cadastra nome e e-mail (aparece na lista de Responsável).
+
+DADOS
+- Base: C:\Portal\dados\portal.json · anexos: dados\anexos · backup diário: dados\backup
+- Para mudar de computador: copie a pasta inteira (inclusive "dados").
+
+ATENÇÃO
+- O portal só funciona com o PC ligado, logado e a janela do servidor aberta.
+- O IP 10.11.4.40 pode mudar. Se mudar, use http://NOME-DO-PC.grupoamil.com.br:8080
+  (nome aparece ao iniciar) ou peça ao TI para fixar o IP.
+- Login ainda é de teste (qualquer senha). Alinhe com TI/Segurança antes de divulgar amplamente.
+- "Limpar testes" apaga a base de TODOS (só nível 3 vê).

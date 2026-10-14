@@ -1,0 +1,29 @@
+ATUALIZAÇÃO - E-MAIL REAL + CORREÇÃO DO "MODO TESTE"
+====================================================
+1) Feche a janela preta do servidor (se estiver aberta).
+2) Copie TUDO deste zip para C:\Portal, substituindo os arquivos.
+   (os demais arquivos - formulario.html, minhas.html, analises.html, assets\quadro.js,
+    assets\analises.js, assets\style.css e a pasta dados - continuam como estão)
+3) Edite config_email.json no Bloco de Notas (ver abaixo) e salve.
+4) Abra o Outlook e deixe aberto.
+5) Dois cliques em iniciar_portal.bat -> o navegador abre sozinho em http://localhost:8080
+
+NUNCA abra o index.html com dois cliques (fica em modo teste, faixa vermelha).
+Use o atalho "ABRIR O PORTAL" ou o link http://localhost:8080 (colegas: http://10.11.4.40:8080).
+
+config_email.json
+- metodo: "outlook"  -> envia pelo seu Outlook (sai da sua caixa). Recomendado.
+          "smtp"     -> servidor SMTP / Direct Send (precisa liberação do TI)
+          "arquivo"  -> não envia, salva .eml em dados\emails_enviados (teste)
+          "desligado"
+- equipe_mis / equipe_facilities: e-mails que recebem aviso de NOVO chamado.
+  Ex.: "equipe_facilities": ["maiza.santos@amil.com.br", "gabriele@amil.com.br"]
+- link_portal: link que vai no botão "Abrir o portal" do e-mail.
+
+QUEM RECEBE E-MAIL
+- Solicitante: chamado aberto, mudança de status, comentário do time.
+- Equipe (lista do config): novo chamado.
+- Responsável: quando a demanda é atribuída a ele e quando o solicitante responde.
+
+TESTAR: Quadro do time > "✉ Testar e-mail" (só nível 3). Acompanhe na janela do servidor:
+  E-MAIL OK -> enviado | E-MAIL ERRO -> motivo. Histórico em dados\emails_log.csv

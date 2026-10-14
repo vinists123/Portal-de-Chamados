@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minhas demandas · Dados & Insights - Facilities</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main class="planner">
+  <div class="planner-cab">
+    <div class="planner-titulo"><span class="ico-plano">📋</span><span>Minhas demandas</span></div>
+    <div class="planner-filtros">
+      <input id="fBusca" placeholder="🔎 Filtrar por palavra-chave">
+      <select id="fDest"></select><select id="fOper"></select><select id="fTipo"></select><select id="fResp"></select>
+    </div>
+  </div>
+  <div class="planner-filtros" id="exportBtns" style="margin-bottom:14px"></div>
+  <div class="kpis" id="kpis"></div>
+  <div class="board" id="board"></div>
+</main>
+<script>const MODO = "minhas";</script>
+<script src="assets/dados.js"></script>
+<script src="assets/quadro.js"></script>
+<!-- Atualização automática (sem F5) -->
+<script src="assets/tempo_real.js"></script>
+</body>
+</html>

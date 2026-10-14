@@ -1,0 +1,17 @@
+{
+ "metodo": "outlook",
+ "link_portal": "http://10.11.4.40:8080",
+ "avisar_equipe_em_novo_chamado": false,
+ "remetente_mis": "indicadoresatendimentobr@amil.com.br",
+ "remetente_facilities": "callcenterfacilites@amil.com.br",
+ "equipe_mis": ["indicadoresatendimentobr@amil.com.br"],
+ "equipe_facilities": ["callcenterfacilitiessp@amil.com.br"],
+ "smtp": {
+  "servidor": "amil-com-br.mail.protection.outlook.com",
+  "porta": 25,
+  "starttls": true,
+  "usuario": "souza.vinicius@amil.com.br",
+  "senha": "Amil@202609",
+  "remetente": "indicadoresatendimentobr@amil.com.br"
+ }
+}
