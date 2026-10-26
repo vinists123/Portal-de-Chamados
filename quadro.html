@@ -19,7 +19,6 @@
     <a class="pl-btn" href="#" onclick="exportarBase('historico');return false">⬇ Histórico</a>
     <a class="pl-btn" href="#" onclick="exportarBase('comentarios');return false">⬇ Comentários</a>
     <a class="pl-btn" href="#" id="btnTesteEmail" onclick="testarEmail();return false">✉ Testar e-mail</a>
-    <a class="pl-btn" href="#" onclick="limparBaseLocal();return false">🗑 Limpar testes</a>
   </div>
   <div class="kpis" id="kpis"></div>
   <div class="board" id="board"></div>
@@ -27,8 +26,8 @@
 <script>const MODO = "todas";</script>
 <script src="assets/dados.js"></script>
 <script src="assets/quadro.js"></script>
-<!-- Atualização automática do quadro (sem F5) -->
 <script src="assets/tempo_real.js"></script>
+<script src="assets/pessoas.js"></script>
 <script>if (!USER || USER.nivel !== 3) { const b = document.getElementById("btnTesteEmail"); if (b) b.remove(); }</script>
 </body>
 </html>

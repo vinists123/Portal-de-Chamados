@@ -1,0 +1,12 @@
+PORTAL v6.3 - SAÍDA SÓ POR INATIVIDADE + ETAPAS (%) NO CARD + INDICADORES FILTRADOS
+===================================================================================
+1) Feche a janela preta do servidor.
+2) Substitua na pasta do portal:
+     servidor_portal.py
+     assets\dados.js
+     assets\quadro.js
+   (os .html, avisos.js, tempo_real.js, style.css, analises.js, configs e a pasta dados continuam iguais)
+3) Dois cliques em iniciar_portal.bat -> deve mostrar "v6.3" e "sai após 2 h SEM USO".
+4) Avise o time: todos precisam entrar de novo e apertar Ctrl+F5.
+
+"sessao_horas" no config_portal.json agora significa: horas SEM USO até desconectar.

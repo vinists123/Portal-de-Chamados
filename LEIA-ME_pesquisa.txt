@@ -1,0 +1,11 @@
+PESQUISA DE SATISFAÇÃO (v6.6)
+1) Copie assets\pesquisa.js para a pasta assets do portal.
+2) Abra assets\dados.js, vá até o final (Ctrl+End) e cole esta linha:
+
+document.addEventListener("DOMContentLoaded", () => { if (!naTelaLogin()) document.body.appendChild(Object.assign(document.createElement("script"), {src: "assets/pesquisa.js"})); });
+
+3) Salve e peça para todos apertarem Ctrl+F5. Não precisa reiniciar o servidor.
+
+Ajustes no começo do pesquisa.js:
+- AVALIACAO_DESDE: só pede nota de chamados concluídos a partir desta data
+- ADIAR_HORAS: tempo que o "Avaliar depois" esconde o pop-up

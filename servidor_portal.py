@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-SERVIDOR DO PORTAL DE DEMANDAS - Dados & Insights - Facilities   (v6.2)
+SERVIDOR DO PORTAL DE DEMANDAS - Dados & Insights - Facilities   (v6.3)
 - Somente biblioteca padrão do Python.
-- Login com SENHA DE REDE (Windows/AD), sem bloqueio por tentativas, sessão de 2 h.
+- Login com SENHA DE REDE (Windows/AD), sem bloqueio por tentativas.
+- SESSÃO POR INATIVIDADE: só desconecta depois de X horas SEM USAR o portal (padrão 2 h).
+  (consultas automáticas da tela não contam como uso; cliques, digitação e gravações contam)
 - AVISOS e FAQ: só os "gestores" (config_portal.json) alteram.
 - TEMPO REAL: /api/db/versao permite que as telas se atualizem sozinhas.
 - E-mails pelas caixas do MIS e Facilities (config_email.json).
@@ -14,7 +16,7 @@ from email.message import EmailMessage
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs, unquote
 
-VERSAO_SERVIDOR = "6.2"
+VERSAO_SERVIDOR = "6.3"
 PASTA = os.path.dirname(os.path.abspath(__file__))
 PASTA_DADOS = os.path.join(PASTA, "dados")
 PASTA_ANEXOS = os.path.join(PASTA_DADOS, "anexos")
@@ -118,6 +120,13 @@ def config_portal():
     return ler_config(ARQ_CFG_PORTAL, CFG_PORTAL_PADRAO, "config_portal.json")
 
 
+def horas_inatividade():
+    try:
+        return max(0.01, float(config_portal().get("sessao_horas", 2)))
+    except (TypeError, ValueError):
+        return 2.0
+
+
 def gestores():
     return [str(x).strip().lower() for x in (config_portal().get("gestores") or []) if str(x).strip()]
 
@@ -190,7 +199,7 @@ def validar_senha_rede(usuario_digitado, senha, dominio_cfg):
     return False, ERROS_WINDOWS.get(ultimo, f"Não foi possível validar a senha (código {ultimo}).")
 
 
-SESSOES = {}
+SESSOES = {}            # token -> {"login", "expira"}  (expira = último uso + horas de inatividade)
 TRAVA_SESSAO = threading.Lock()
 
 
@@ -206,9 +215,9 @@ def log_acesso(login, ip, situacao):
         pass
 
 
-def criar_sessao(login, horas):
+def criar_sessao(login):
     token = secrets.token_urlsafe(32)
-    expira = time.time() + float(horas) * 3600
+    expira = time.time() + horas_inatividade() * 3600
     with TRAVA_SESSAO:
         agora_ts = time.time()
         for t in [t for t, s in SESSOES.items() if s["expira"] < agora_ts]:
@@ -226,6 +235,16 @@ def sessao_do_token(token):
             del SESSOES[token]
             return None
         return s
+
+
+def renovar_sessao(token):
+    """Usuário fez alguma coisa: o prazo de inatividade recomeça."""
+    with TRAVA_SESSAO:
+        s = SESSOES.get(token)
+        if s and s["expira"] >= time.time():
+            s["expira"] = time.time() + horas_inatividade() * 3600
+            return s
+    return None
 
 
 # ---------------------------------------------------------------- e-mail
@@ -352,6 +371,8 @@ def enfileirar_emails(lista):
 
 # ---------------------------------------------------------------- HTTP
 ROTAS_LIVRES = {"/api/login", "/api/logout", "/api/versao", "/api/sessao"}
+# rotas que contam como "uso" do portal (renovam o prazo de inatividade)
+ROTAS_USO = {("PUT", "/api/db"), ("POST", "/api/anexos"), ("POST", "/api/sessao/renovar"), ("POST", "/api/email/teste")}
 
 
 class Portal(SimpleHTTPRequestHandler):
@@ -410,7 +431,9 @@ class Portal(SimpleHTTPRequestHandler):
             if caminho.startswith("/api/") and caminho not in ROTAS_LIVRES:
                 self.sessao = sessao_do_token(self.token())
                 if not self.sessao:
-                    return self.responder(401, {"erro": "Sua sessão expirou. Entre novamente.", "sessao_expirada": True})
+                    return self.responder(401, {"erro": "Sua sessão expirou por inatividade. Entre novamente.", "sessao_expirada": True})
+                if (self.command, caminho) in ROTAS_USO:
+                    renovar_sessao(self.token())
             func()
         except (ConnectionAbortedError, ConnectionResetError, BrokenPipeError):
             pass
@@ -490,7 +513,7 @@ class Portal(SimpleHTTPRequestHandler):
             print(f"{agora()}  AVISOS/FAQ atualizados por {self.sessao['login']}")
         if env.get("emails"):
             enfileirar_emails(env["emails"])
-        return self.responder(200, {"versao": novo["versao"]})
+        return self.responder(200, {"versao": novo["versao"], "expira": int(self.sessao["expira"] * 1000)})
 
     def do_POST(self):
         self.seguro(self._post)
@@ -513,9 +536,9 @@ class Portal(SimpleHTTPRequestHandler):
             log_acesso(login, self.ip(), f"NEGADO: {motivo}")
             print(f"{agora()}  LOGIN NEGADO -> {login} ({self.ip()}) | {motivo}")
             return self.responder(401, {"erro": motivo})
-        token, expira = criar_sessao(login, cfg.get("sessao_horas", 2))
-        segundos = int(float(cfg.get("sessao_horas", 2)) * 3600)
-        self._cookie_extra = f"{COOKIE}={token}; Path=/; HttpOnly; SameSite=Strict; Max-Age={segundos}"
+        token, expira = criar_sessao(login)
+        # cookie de sessão do navegador: quem controla a inatividade é o servidor
+        self._cookie_extra = f"{COOKIE}={token}; Path=/; HttpOnly; SameSite=Strict"
         log_acesso(login, self.ip(), "OK")
         print(f"{agora()}  LOGIN OK     -> {login} ({self.ip()})")
         return self.responder(200, {"login": login, "expira": int(expira * 1000)})
@@ -535,6 +558,8 @@ class Portal(SimpleHTTPRequestHandler):
             return self._login()
         if url.path == "/api/logout":
             return self._logout()
+        if url.path == "/api/sessao/renovar":
+            return self.responder(200, {"login": self.sessao["login"], "expira": int(self.sessao["expira"] * 1000)})
         if url.path == "/api/email/teste":
             try:
                 d = json.loads(self.corpo().decode("utf-8") or "{}")
@@ -625,7 +650,7 @@ if __name__ == "__main__":
         print(" LOGIN            : MODO TESTE (qualquer senha entra!)  -> mude para \"rede\" em config_portal.json")
     else:
         print(f" LOGIN            : senha de rede · domínio {cfgp.get('dominio') or os.environ.get('USERDOMAIN', '?')}"
-              f" · sessão de {cfgp.get('sessao_horas', 2)} h · sem bloqueio por tentativas")
+              f" · sai após {cfgp.get('sessao_horas', 2)} h SEM USO · sem bloqueio por tentativas")
     print(f" Avisos/FAQ       : editáveis por {', '.join(gestores()) or '(ninguém)'}")
     print(f" E-mails          : método '{cfg['metodo']}'")
     print(f"   MIS sai de        : {cfg.get('remetente_mis') or '(sua caixa)'}")
